@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/HolySxn/To-Do/internal"
+	server "github.com/HolySxn/To-Do/internal"
 	"github.com/jackc/pgx/v5"
 )
 
 // CRUD operations for Lists
-func (d *DB) CreateList(ctx context.Context, title string) (*internal.List, error) {
+func (d *DB) CreateList(ctx context.Context, title string) (*server.List, error) {
 	query := `INSERT INTO lists (title) VALUES ($1) RETURNING id, title, created_at, updated_at`
 
-	var list internal.List
+	var list server.List
 	err := d.Pool.QueryRow(ctx, query, title).Scan(
 		&list.ID,
 		&list.Title,
@@ -26,10 +26,10 @@ func (d *DB) CreateList(ctx context.Context, title string) (*internal.List, erro
 	return &list, nil
 }
 
-func (d *DB) GetList(ctx context.Context, id string) (*internal.List, error) {
+func (d *DB) GetList(ctx context.Context, id string) (*server.List, error) {
 	query := `SELECT * FROM lists WHERE id = $1`
 
-	var list internal.List
+	var list server.List
 	err := d.Pool.QueryRow(ctx, query, id).Scan(
 		&list.ID,
 		&list.Title,
@@ -46,7 +46,7 @@ func (d *DB) GetList(ctx context.Context, id string) (*internal.List, error) {
 	return &list, nil
 }
 
-func (d *DB) GetAllLists(ctx context.Context) ([]internal.List, error) {
+func (d *DB) GetAllLists(ctx context.Context) ([]server.List, error) {
 	query := `SELECT * FROM lists ORDER BY created_at DESC`
 
 	rows, err := d.Pool.Query(ctx, query)
@@ -55,9 +55,9 @@ func (d *DB) GetAllLists(ctx context.Context) ([]internal.List, error) {
 	}
 	defer rows.Close()
 
-	var lists []internal.List
+	var lists []server.List
 	for rows.Next() {
-		var list internal.List
+		var list server.List
 		err := rows.Scan(
 			&list.ID,
 			&list.Title,
@@ -73,10 +73,10 @@ func (d *DB) GetAllLists(ctx context.Context) ([]internal.List, error) {
 	return lists, nil
 }
 
-func (d *DB) UpdateList(ctx context.Context, id string, title string) (*internal.List, error) {
+func (d *DB) UpdateList(ctx context.Context, id string, title string) (*server.List, error) {
 	query := `UPDATE lists SET title = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, title, created_at, updated_at`
 
-	var list internal.List
+	var list server.List
 	err := d.Pool.QueryRow(ctx, query, title, id).Scan(
 		&list.ID,
 		&list.Title,

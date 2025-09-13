@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/HolySxn/To-Do/internal"
+	server "github.com/HolySxn/To-Do/internal"
 	"github.com/jackc/pgx/v5"
 )
 
 // CRUD operations for SubTasks
-func (d *DB) CreateSubTask(ctx context.Context, taskID string, subTaskName, description string) (*internal.SubTask, error) {
+func (d *DB) CreateSubTask(ctx context.Context, taskID string, subTaskName, description string) (*server.SubTask, error) {
 	query := `INSERT INTO subtasks (task_id, subtask_name, description) VALUES ($1, $2, $3) RETURNING id, task_id, subtask_name, description, completed, created_at, updated_at`
 
-	var subTask internal.SubTask
+	var subTask server.SubTask
 	err := d.Pool.QueryRow(ctx, query, taskID, subTaskName, description).Scan(
 		&subTask.ID,
 		&subTask.TaskID,
@@ -29,10 +29,10 @@ func (d *DB) CreateSubTask(ctx context.Context, taskID string, subTaskName, desc
 	return &subTask, nil
 }
 
-func (d *DB) GetSubTask(ctx context.Context, id string) (*internal.SubTask, error) {
+func (d *DB) GetSubTask(ctx context.Context, id string) (*server.SubTask, error) {
 	query := `SELECT * FROM subtasks WHERE id = $1`
 
-	var subTask internal.SubTask
+	var subTask server.SubTask
 	err := d.Pool.QueryRow(ctx, query, id).Scan(
 		&subTask.ID,
 		&subTask.TaskID,
@@ -52,7 +52,7 @@ func (d *DB) GetSubTask(ctx context.Context, id string) (*internal.SubTask, erro
 	return &subTask, nil
 }
 
-func (d *DB) GetSubTasksByTaskID(ctx context.Context, taskID string) ([]internal.SubTask, error) {
+func (d *DB) GetSubTasksByTaskID(ctx context.Context, taskID string) ([]server.SubTask, error) {
 	query := `SELECT * FROM subtasks WHERE task_id = $1 ORDER BY created_at DESC`
 
 	rows, err := d.Pool.Query(ctx, query, taskID)
@@ -61,9 +61,9 @@ func (d *DB) GetSubTasksByTaskID(ctx context.Context, taskID string) ([]internal
 	}
 	defer rows.Close()
 
-	var subTasks []internal.SubTask
+	var subTasks []server.SubTask
 	for rows.Next() {
-		var subTask internal.SubTask
+		var subTask server.SubTask
 		err := rows.Scan(
 			&subTask.ID,
 			&subTask.TaskID,
@@ -82,7 +82,7 @@ func (d *DB) GetSubTasksByTaskID(ctx context.Context, taskID string) ([]internal
 	return subTasks, nil
 }
 
-func (d *DB) GetAllSubTasks(ctx context.Context) ([]internal.SubTask, error) {
+func (d *DB) GetAllSubTasks(ctx context.Context) ([]server.SubTask, error) {
 	query := `SELECT * FROM subtasks ORDER BY created_at DESC`
 
 	rows, err := d.Pool.Query(ctx, query)
@@ -91,9 +91,9 @@ func (d *DB) GetAllSubTasks(ctx context.Context) ([]internal.SubTask, error) {
 	}
 	defer rows.Close()
 
-	var subTasks []internal.SubTask
+	var subTasks []server.SubTask
 	for rows.Next() {
-		var subTask internal.SubTask
+		var subTask server.SubTask
 		err := rows.Scan(
 			&subTask.ID,
 			&subTask.TaskID,
@@ -112,10 +112,10 @@ func (d *DB) GetAllSubTasks(ctx context.Context) ([]internal.SubTask, error) {
 	return subTasks, nil
 }
 
-func (d *DB) UpdateSubTask(ctx context.Context, id, subTaskName, description string, completed bool) (*internal.SubTask, error) {
+func (d *DB) UpdateSubTask(ctx context.Context, id, subTaskName, description string, completed bool) (*server.SubTask, error) {
 	query := `UPDATE subtasks SET subtask_name = $1, description = $2, completed = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 RETURNING id, task_id, subtask_name, description, completed, created_at, updated_at`
 
-	var subTask internal.SubTask
+	var subTask server.SubTask
 	err := d.Pool.QueryRow(ctx, query, subTaskName, description, completed, id).Scan(
 		&subTask.ID,
 		&subTask.TaskID,
@@ -135,10 +135,10 @@ func (d *DB) UpdateSubTask(ctx context.Context, id, subTaskName, description str
 	return &subTask, nil
 }
 
-func (d *DB) ToggleSubTaskCompletion(ctx context.Context, id string) (*internal.SubTask, error) {
+func (d *DB) ToggleSubTaskCompletion(ctx context.Context, id string) (*server.SubTask, error) {
 	query := `UPDATE subtasks SET completed = NOT completed, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING id, task_id, subtask_name, description, completed, created_at, updated_at`
 
-	var subTask internal.SubTask
+	var subTask server.SubTask
 	err := d.Pool.QueryRow(ctx, query, id).Scan(
 		&subTask.ID,
 		&subTask.TaskID,

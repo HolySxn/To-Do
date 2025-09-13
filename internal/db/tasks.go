@@ -4,15 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/HolySxn/To-Do/internal"
+	server "github.com/HolySxn/To-Do/internal"
 	"github.com/jackc/pgx/v5"
 )
 
 // CRUD operations for Tasks
-func (d *DB) CreateTask(ctx context.Context, listID, taskName, description string) (*internal.Task, error) {
+func (d *DB) CreateTask(ctx context.Context, listID, taskName, description string) (*server.Task, error) {
 	query := `INSERT INTO tasks (list_id, task_name, description) VALUES ($1, $2, $3) RETURNING id, list_id, task_name, description, completed, created_at, updated_at`
 
-	var task internal.Task
+	var task server.Task
 	err := d.Pool.QueryRow(ctx, query, listID, taskName, description).Scan(
 		&task.ID,
 		&task.ListID,
@@ -29,10 +29,10 @@ func (d *DB) CreateTask(ctx context.Context, listID, taskName, description strin
 	return &task, nil
 }
 
-func (d *DB) GetTask(ctx context.Context, id string) (*internal.Task, error) {
+func (d *DB) GetTask(ctx context.Context, id string) (*server.Task, error) {
 	query := `SELECT * FROM tasks WHERE id = $1`
 
-	var task internal.Task
+	var task server.Task
 	err := d.Pool.QueryRow(ctx, query, id).Scan(
 		&task.ID,
 		&task.ListID,
@@ -52,7 +52,7 @@ func (d *DB) GetTask(ctx context.Context, id string) (*internal.Task, error) {
 	return &task, nil
 }
 
-func (d *DB) GetTasksByListID(ctx context.Context, listID string) ([]internal.Task, error) {
+func (d *DB) GetTasksByListID(ctx context.Context, listID string) ([]server.Task, error) {
 	query := `SELECT * FROM tasks WHERE list_id = $1 ORDER BY created_at DESC`
 
 	rows, err := d.Pool.Query(ctx, query, listID)
@@ -61,9 +61,9 @@ func (d *DB) GetTasksByListID(ctx context.Context, listID string) ([]internal.Ta
 	}
 	defer rows.Close()
 
-	var tasks []internal.Task
+	var tasks []server.Task
 	for rows.Next() {
-		var task internal.Task
+		var task server.Task
 		err := rows.Scan(
 			&task.ID,
 			&task.ListID,
@@ -82,7 +82,7 @@ func (d *DB) GetTasksByListID(ctx context.Context, listID string) ([]internal.Ta
 	return tasks, nil
 }
 
-func (d *DB) GetAllTasks(ctx context.Context) ([]internal.Task, error) {
+func (d *DB) GetAllTasks(ctx context.Context) ([]server.Task, error) {
 	query := `SELECT * FROM tasks ORDER BY created_at DESC`
 
 	rows, err := d.Pool.Query(ctx, query)
@@ -91,9 +91,9 @@ func (d *DB) GetAllTasks(ctx context.Context) ([]internal.Task, error) {
 	}
 	defer rows.Close()
 
-	var tasks []internal.Task
+	var tasks []server.Task
 	for rows.Next() {
-		var task internal.Task
+		var task server.Task
 		err := rows.Scan(
 			&task.ID,
 			&task.ListID,
@@ -112,10 +112,10 @@ func (d *DB) GetAllTasks(ctx context.Context) ([]internal.Task, error) {
 	return tasks, nil
 }
 
-func (d *DB) UpdateTask(ctx context.Context, id, taskName, description string, completed bool) (*internal.Task, error) {
+func (d *DB) UpdateTask(ctx context.Context, id, taskName, description string, completed bool) (*server.Task, error) {
 	query := `UPDATE tasks SET task_name = $1, description = $2, completed = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 RETURNING id, list_id, task_name, description, completed, created_at, updated_at`
 
-	var task internal.Task
+	var task server.Task
 	err := d.Pool.QueryRow(ctx, query, taskName, description, completed, id).Scan(
 		&task.ID,
 		&task.ListID,
@@ -135,10 +135,10 @@ func (d *DB) UpdateTask(ctx context.Context, id, taskName, description string, c
 	return &task, nil
 }
 
-func (d *DB) ToggleTaskCompletion(ctx context.Context, id string) (*internal.Task, error) {
+func (d *DB) ToggleTaskCompletion(ctx context.Context, id string) (*server.Task, error) {
 	query := `UPDATE tasks SET completed = NOT completed, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING id, list_id, task_name, description, completed, created_at, updated_at`
 
-	var task internal.Task
+	var task server.Task
 	err := d.Pool.QueryRow(ctx, query, id).Scan(
 		&task.ID,
 		&task.ListID,

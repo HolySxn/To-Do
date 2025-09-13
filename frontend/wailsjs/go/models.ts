@@ -1,27 +1,23 @@
-export namespace main {
+export namespace server {
 	
-	export class Task {
-	    id: number;
+	export class List {
+	    id: string;
 	    title: string;
-	    description: string;
-	    completed: boolean;
-	    priority: string;
-	    created_at: time.Time;
-	    due_date?: time.Time;
+	    // Go type: time
+	    created_at: any;
+	    // Go type: time
+	    updated_at: any;
 	
 	    static createFrom(source: any = {}) {
-	        return new Task(source);
+	        return new List(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
 	        this.title = source["title"];
-	        this.description = source["description"];
-	        this.completed = source["completed"];
-	        this.priority = source["priority"];
-	        this.created_at = this.convertValues(source["created_at"], time.Time);
-	        this.due_date = this.convertValues(source["due_date"], time.Time);
+	        this.created_at = this.convertValues(source["created_at"], null);
+	        this.updated_at = this.convertValues(source["updated_at"], null);
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {
@@ -42,38 +38,93 @@ export namespace main {
 		    return a;
 		}
 	}
-	export class TaskFilter {
-	    status: string;
-	    priority: string;
-	    date: string;
+	export class SubTask {
+	    id: string;
+	    task_id: string;
+	    subtask_name: string;
+	    description: string;
+	    completed: boolean;
+	    // Go type: time
+	    created_at: any;
+	    // Go type: time
+	    updated_at: any;
 	
 	    static createFrom(source: any = {}) {
-	        return new TaskFilter(source);
+	        return new SubTask(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.status = source["status"];
-	        this.priority = source["priority"];
-	        this.date = source["date"];
+	        this.id = source["id"];
+	        this.task_id = source["task_id"];
+	        this.subtask_name = source["subtask_name"];
+	        this.description = source["description"];
+	        this.completed = source["completed"];
+	        this.created_at = this.convertValues(source["created_at"], null);
+	        this.updated_at = this.convertValues(source["updated_at"], null);
 	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
 	}
-
-}
-
-export namespace time {
-	
-	export class Time {
-	
+	export class Task {
+	    id: string;
+	    list_id: string;
+	    task_name: string;
+	    description: string;
+	    completed: boolean;
+	    // Go type: time
+	    created_at: any;
+	    // Go type: time
+	    updated_at: any;
 	
 	    static createFrom(source: any = {}) {
-	        return new Time(source);
+	        return new Task(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	
+	        this.id = source["id"];
+	        this.list_id = source["list_id"];
+	        this.task_name = source["task_name"];
+	        this.description = source["description"];
+	        this.completed = source["completed"];
+	        this.created_at = this.convertValues(source["created_at"], null);
+	        this.updated_at = this.convertValues(source["updated_at"], null);
 	    }
+	
+		convertValues(a: any, classs: any, asMap: boolean = false): any {
+		    if (!a) {
+		        return a;
+		    }
+		    if (a.slice && a.map) {
+		        return (a as any[]).map(elem => this.convertValues(elem, classs));
+		    } else if ("object" === typeof a) {
+		        if (asMap) {
+		            for (const key of Object.keys(a)) {
+		                a[key] = new classs(a[key]);
+		            }
+		            return a;
+		        }
+		        return new classs(a);
+		    }
+		    return a;
+		}
 	}
 
 }

@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/HolySxn/To-Do/internal"
+	server "github.com/HolySxn/To-Do/internal"
 	"github.com/HolySxn/To-Do/internal/db"
 )
 
@@ -55,19 +55,19 @@ func (a *App) Greet(name string) string {
 }
 
 // List CRUD operations
-func (a *App) CreateList(title string) (*internal.List, error) {
+func (a *App) CreateList(title string) (*server.List, error) {
 	return a.db.CreateList(a.ctx, title)
 }
 
-func (a *App) GetList(id string) (*internal.List, error) {
+func (a *App) GetList(id string) (*server.List, error) {
 	return a.db.GetList(a.ctx, id)
 }
 
-func (a *App) GetAllLists() ([]internal.List, error) {
+func (a *App) GetAllLists() ([]server.List, error) {
 	return a.db.GetAllLists(a.ctx)
 }
 
-func (a *App) UpdateList(id string, title string) (*internal.List, error) {
+func (a *App) UpdateList(id string, title string) (*server.List, error) {
 	return a.db.UpdateList(a.ctx, id, title)
 }
 
@@ -76,27 +76,27 @@ func (a *App) DeleteList(id string) error {
 }
 
 // Task CRUD operations
-func (a *App) CreateTask(listID string, taskName, description string) (*internal.Task, error) {
+func (a *App) CreateTask(listID string, taskName, description string) (*server.Task, error) {
 	return a.db.CreateTask(a.ctx, listID, taskName, description)
 }
 
-func (a *App) GetTask(id string) (*internal.Task, error) {
+func (a *App) GetTask(id string) (*server.Task, error) {
 	return a.db.GetTask(a.ctx, id)
 }
 
-func (a *App) GetTasksByListID(listID string) ([]internal.Task, error) {
+func (a *App) GetTasksByListID(listID string) ([]server.Task, error) {
 	return a.db.GetTasksByListID(a.ctx, listID)
 }
 
-func (a *App) GetAllTasks() ([]internal.Task, error) {
+func (a *App) GetAllTasks() ([]server.Task, error) {
 	return a.db.GetAllTasks(a.ctx)
 }
 
-func (a *App) UpdateTask(id string, taskName, description string, completed bool) (*internal.Task, error) {
+func (a *App) UpdateTask(id string, taskName, description string, completed bool) (*server.Task, error) {
 	return a.db.UpdateTask(a.ctx, id, taskName, description, completed)
 }
 
-func (a *App) ToggleTaskCompletion(id string) (*internal.Task, error) {
+func (a *App) ToggleTaskCompletion(id string) (*server.Task, error) {
 	return a.db.ToggleTaskCompletion(a.ctx, id)
 }
 
@@ -105,27 +105,27 @@ func (a *App) DeleteTask(id string) error {
 }
 
 // SubTask CRUD operations
-func (a *App) CreateSubTask(taskID string, subTaskName, description string) (*internal.SubTask, error) {
+func (a *App) CreateSubTask(taskID string, subTaskName, description string) (*server.SubTask, error) {
 	return a.db.CreateSubTask(a.ctx, taskID, subTaskName, description)
 }
 
-func (a *App) GetSubTask(id string) (*internal.SubTask, error) {
+func (a *App) GetSubTask(id string) (*server.SubTask, error) {
 	return a.db.GetSubTask(a.ctx, id)
 }
 
-func (a *App) GetSubTasksByTaskID(taskID string) ([]internal.SubTask, error) {
+func (a *App) GetSubTasksByTaskID(taskID string) ([]server.SubTask, error) {
 	return a.db.GetSubTasksByTaskID(a.ctx, taskID)
 }
 
-func (a *App) GetAllSubTasks() ([]internal.SubTask, error) {
+func (a *App) GetAllSubTasks() ([]server.SubTask, error) {
 	return a.db.GetAllSubTasks(a.ctx)
 }
 
-func (a *App) UpdateSubTask(id string, subTaskName, description string, completed bool) (*internal.SubTask, error) {
+func (a *App) UpdateSubTask(id string, subTaskName, description string, completed bool) (*server.SubTask, error) {
 	return a.db.UpdateSubTask(a.ctx, id, subTaskName, description, completed)
 }
 
-func (a *App) ToggleSubTaskCompletion(id string) (*internal.SubTask, error) {
+func (a *App) ToggleSubTaskCompletion(id string) (*server.SubTask, error) {
 	return a.db.ToggleSubTaskCompletion(a.ctx, id)
 }
 
