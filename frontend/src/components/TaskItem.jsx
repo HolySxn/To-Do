@@ -9,7 +9,9 @@ function TaskItem({
   onToggleTaskSettings, 
   onAddSubtask, 
   onDeleteTask, 
-  onMoveTaskToList 
+  onMoveTaskToList,
+  onToggleSubtask,
+  onDeleteSubtask
 }) {
   return (
     <div className="task-container">
@@ -53,7 +55,7 @@ function TaskItem({
       {/* Subtasks */}
       {task.subtasks && task.subtasks.length > 0 && (
         <div className="subtasks-list">
-          {task.subtasks.map((subtask) => (
+          {(task.subtasks || []).map((subtask) => (
             <SubTaskItem
               key={subtask.id}
               subtask={subtask}

@@ -232,7 +232,7 @@ export function useTaskActions() {
                   task.id === taskId 
                     ? {
                         ...task,
-                        subtasks: [...task.subtasks, subtaskWithUI],
+                        subtasks: [...(task.subtasks || []), subtaskWithUI],
                         settingsOpen: false
                       }
                     : task
@@ -258,7 +258,7 @@ export function useTaskActions() {
                 task.id === taskId 
                   ? {
                       ...task,
-                      subtasks: task.subtasks.map(subtask => 
+                      subtasks: (task.subtasks || []).map(subtask => 
                         subtask.id === subtaskId 
                           ? { ...subtask, completed: updatedSubtask.completed }
                           : subtask
@@ -286,7 +286,7 @@ export function useTaskActions() {
                 task.id === taskId 
                   ? {
                       ...task,
-                      subtasks: task.subtasks.filter(subtask => subtask.id !== subtaskId)
+                      subtasks: (task.subtasks || []).filter(subtask => subtask.id !== subtaskId)
                     }
                   : task
               )
