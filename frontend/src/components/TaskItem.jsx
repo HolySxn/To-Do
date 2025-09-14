@@ -13,13 +13,13 @@ function TaskItem({
 }) {
   return (
     <div className="task-container">
-      <div className="task-item">
+      <div className={`task-item ${task.completed ? 'completed' : ''}`}>
         <div className="task-radio" onClick={() => onToggleTask(listId, task.id)}>
           <div className={`radio-button ${task.completed ? 'checked' : ''}`}>
             {task.completed && <span className="radio-checkmark">✓</span>}
           </div>
         </div>
-        <span className="task-text">{task.text}</span>
+        <span className={`task-text ${task.completed ? 'completed-text' : ''}`}>{task.text}</span>
         <div className="task-settings">
           <button className="task-settings-button" onClick={(e) => onToggleTaskSettings(listId, task.id, e)}>
             <span className="task-settings-icon">⋯</span>

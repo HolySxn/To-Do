@@ -11,6 +11,7 @@ A modern, responsive to-do application built with Wails (Go + React) and Postgre
 - **Task Management**: 
   - Create, read, update, and delete tasks
   - Toggle task completion with checkboxes
+  - Strikethrough styling for completed tasks
   - Separate completed tasks section (collapsible)
   - Delete tasks with confirmation
 - **List Management**:

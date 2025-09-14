@@ -462,6 +462,8 @@ body {
 .task-text.completed-text {
   text-decoration: line-through;
   color: #6c757d;
+  opacity: 0.7;
+  transition: all 0.3s ease;
 }
 
 /* Completed Tasks Section */
@@ -513,6 +515,8 @@ body {
 
 .task-item.completed {
   opacity: 0.7;
+  background-color: rgba(108, 117, 125, 0.05);
+  transition: all 0.3s ease;
 }
 
 /* Completed Tasks Settings Menu - Positioned outside completed container */
@@ -732,7 +736,9 @@ body {
 
 .subtask-text.completed {
   text-decoration: line-through;
-  color: #999;
+  color: #6c757d;
+  opacity: 0.7;
+  transition: all 0.3s ease;
 }
 
 .subtask-delete {
