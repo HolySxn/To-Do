@@ -236,3 +236,29 @@ The application features a robust configuration system that supports environment
 - **Framework**: Wails v2
 - **Database**: PostgreSQL with UUID primary keys
 - **Configuration**: Environment variables with .env support
+
+## Screenshots
+
+### Main Interface
+![Main Interface](screenshots/main-interface.png)
+*Main application interface showing task lists with horizontal scroll*
+
+### Sidebar Navigation
+![Sidebar](screenshots/sidebar.png)
+*Collapsible sidebar with lists management and create button*
+
+### Task Management
+![Task Management](screenshots/task-management.png)
+*Creating and managing tasks with subtasks functionality*
+
+### Completed Tasks
+![Completed Tasks](screenshots/completed-tasks.png)
+*Completed tasks section with collapsible view and strikethrough text*
+
+### Settings Menu
+![Settings Menu](screenshots/settings-menu.png)
+*Sorting options and list management settings*
+
+### Drag and Drop
+![Drag and Drop](screenshots/drag-drop.png)
+*Drag and drop functionality for reordering lists*
