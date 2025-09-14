@@ -156,8 +156,8 @@ function App() {
 
   // Wrapper functions for actions
   const handleCreateList = () => createList(setLists, setTaskLists)
-  const handleRenameList = (listId) => renameList(listId, setLists, setTaskLists)
-  const handleDeleteList = (listId) => deleteList(listId, setLists, setTaskLists)
+  const handleRenameList = (listId) => renameList(listId, lists, taskLists, setLists, setTaskLists)
+  const handleDeleteList = (listId) => deleteList(listId, lists, taskLists, setLists, setTaskLists)
   const handleReorderLists = (listIds) => reorderLists(listIds, setLists, setTaskLists)
   const handleAddTask = (listId) => addTask(listId, setTaskLists, setLists)
   const handleToggleTask = (listId, taskId) => toggleTask(listId, taskId, setTaskLists)

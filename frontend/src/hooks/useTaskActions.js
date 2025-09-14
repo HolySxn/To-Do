@@ -48,8 +48,8 @@ export function useTaskActions() {
     }
   }
 
-  const renameList = async (listId, setLists, setTaskLists) => {
-    const list = setTaskLists.find(l => l.id === listId)
+  const renameList = async (listId, lists, taskLists, setLists, setTaskLists) => {
+    const list = taskLists.find(l => l.id === listId)
     if (!list) return
 
     const newName = prompt('Enter new list name:', list.title)
@@ -76,8 +76,8 @@ export function useTaskActions() {
     }
   }
 
-  const deleteList = async (listId, setLists, setTaskLists) => {
-    const list = setTaskLists.find(l => l.id === listId)
+  const deleteList = async (listId, lists, taskLists, setLists, setTaskLists) => {
+    const list = taskLists.find(l => l.id === listId)
     if (!list) return
 
     const confirmDelete = window.confirm(`Are you sure you want to delete the list "${list.title}"? This will also delete all tasks and subtasks in this list.`)
