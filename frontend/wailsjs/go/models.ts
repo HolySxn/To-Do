@@ -3,6 +3,7 @@ export namespace server {
 	export class List {
 	    id: string;
 	    title: string;
+	    position: number;
 	    // Go type: time
 	    created_at: any;
 	    // Go type: time
@@ -16,6 +17,7 @@ export namespace server {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
 	        this.title = source["title"];
+	        this.position = source["position"];
 	        this.created_at = this.convertValues(source["created_at"], null);
 	        this.updated_at = this.convertValues(source["updated_at"], null);
 	    }

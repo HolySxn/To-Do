@@ -16,6 +16,7 @@ A modern, responsive to-do application built with Wails (Go + React) and Postgre
 - **List Management**:
   - Create new lists
   - View all lists in sidebar
+  - Drag and drop to reorder lists
   - Add tasks to specific lists
 
 ### Backend
@@ -32,6 +33,7 @@ A modern, responsive to-do application built with Wails (Go + React) and Postgre
 ### Lists
 - `id` (UUID PRIMARY KEY)
 - `title` (VARCHAR)
+- `position` (INTEGER) - For drag and drop ordering
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
 
@@ -143,6 +145,7 @@ The application exposes the following functions to the frontend:
 - `GetAllLists() ([]List, error)`
 - `UpdateList(id string, title string) (*List, error)`
 - `DeleteList(id string) error`
+- `ReorderLists(listIDs []string) error`
 
 ### Tasks
 - `CreateTask(listID string, taskName string) (*Task, error)`

@@ -3,6 +3,7 @@ import {
   CreateList, 
   UpdateList, 
   DeleteList,
+  ReorderLists,
   CreateTask,
   UpdateTask,
   DeleteTask,
@@ -89,6 +90,25 @@ export function useTaskActions() {
       setTaskLists(taskLists => taskLists.filter(l => l.id !== listId))
     } catch (error) {
       alert('Failed to delete list. Please try again.')
+    }
+  }
+
+  const reorderLists = async (listIds, setLists, setTaskLists) => {
+    try {
+      await ReorderLists(listIds)
+      
+      // Update the order in both state arrays
+      setLists(prevLists => {
+        const reorderedLists = listIds.map(id => prevLists.find(list => list.id === id)).filter(Boolean)
+        return reorderedLists
+      })
+      
+      setTaskLists(prevTaskLists => {
+        const reorderedTaskLists = listIds.map(id => prevTaskLists.find(list => list.id === id)).filter(Boolean)
+        return reorderedTaskLists
+      })
+    } catch (error) {
+      alert('Failed to reorder lists. Please try again.')
     }
   }
 
@@ -284,6 +304,7 @@ export function useTaskActions() {
     createList,
     renameList,
     deleteList,
+    reorderLists,
     addTask,
     toggleTask,
     deleteTask,

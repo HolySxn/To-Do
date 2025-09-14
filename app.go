@@ -136,6 +136,17 @@ func (a *App) DeleteList(id string) error {
 	return nil
 }
 
+func (a *App) ReorderLists(listIDs []string) error {
+	a.logger.Info("Reordering lists", "list_ids", listIDs)
+	err := a.db.ReorderLists(a.ctx, listIDs)
+	if err != nil {
+		a.logger.Error("Failed to reorder lists", "list_ids", listIDs, "error", err)
+		return err
+	}
+	a.logger.Info("Lists reordered successfully", "list_ids", listIDs)
+	return nil
+}
+
 // Task CRUD operations
 func (a *App) CreateTask(listID string, taskName string) (*server.Task, error) {
 	a.logger.Info("Creating new task", "list_id", listID, "task_name", taskName)

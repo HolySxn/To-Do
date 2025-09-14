@@ -76,6 +76,7 @@ func (d *DB) initTables() error {
 		`CREATE TABLE IF NOT EXISTS lists (
 			id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 			title VARCHAR(255) NOT NULL,
+			position INTEGER DEFAULT 0,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 		)`,

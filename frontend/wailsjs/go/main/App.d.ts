@@ -30,6 +30,8 @@ export function GetTask(arg1:string):Promise<server.Task>;
 
 export function GetTasksByListID(arg1:string):Promise<Array<server.Task>>;
 
+export function ReorderLists(arg1:Array<string>):Promise<void>;
+
 export function ToggleSubTaskCompletion(arg1:string):Promise<server.SubTask>;
 
 export function ToggleTaskCompletion(arg1:string):Promise<server.Task>;

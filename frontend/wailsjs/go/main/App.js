@@ -58,6 +58,10 @@ export function GetTasksByListID(arg1) {
   return window['go']['main']['App']['GetTasksByListID'](arg1);
 }
 
+export function ReorderLists(arg1) {
+  return window['go']['main']['App']['ReorderLists'](arg1);
+}
+
 export function ToggleSubTaskCompletion(arg1) {
   return window['go']['main']['App']['ToggleSubTaskCompletion'](arg1);
 }

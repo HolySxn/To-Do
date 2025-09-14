@@ -23,7 +23,8 @@ function App() {
     deleteTask, 
     addSubtask, 
     toggleSubtask, 
-    deleteSubtask 
+    deleteSubtask,
+    reorderLists
   } = useTaskActions()
 
   // UI state handlers
@@ -157,6 +158,7 @@ function App() {
   const handleCreateList = () => createList(setLists, setTaskLists)
   const handleRenameList = (listId) => renameList(listId, setLists, setTaskLists)
   const handleDeleteList = (listId) => deleteList(listId, setLists, setTaskLists)
+  const handleReorderLists = (listIds) => reorderLists(listIds, setLists, setTaskLists)
   const handleAddTask = (listId) => addTask(listId, setTaskLists, setLists)
   const handleToggleTask = (listId, taskId) => toggleTask(listId, taskId, setTaskLists)
   const handleDeleteTask = (listId, taskId) => deleteTask(listId, taskId, setTaskLists, setLists)
@@ -179,6 +181,7 @@ function App() {
         onToggleLists={toggleLists}
         onToggleListVisibility={toggleListVisibility}
         onCreateList={handleCreateList}
+        onReorderLists={handleReorderLists}
       />
 
       <div className={`main-content ${sidebarOpen ? 'main-content-shifted' : ''}`} onClick={() => { closeAllSettings(); closeAllTaskSettings(); }}>

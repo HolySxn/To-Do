@@ -10,12 +10,21 @@ import (
 
 // CRUD operations for Lists
 func (d *DB) CreateList(ctx context.Context, title string) (*server.List, error) {
-	query := `INSERT INTO lists (title) VALUES ($1) RETURNING id, title, created_at, updated_at`
+	// Get the next position for the new list
+	var maxPosition int
+	query := `SELECT COALESCE(MAX(position), 0) FROM lists`
+	err := d.Pool.QueryRow(ctx, query).Scan(&maxPosition)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get max position: %w", err)
+	}
+
+	query = `INSERT INTO lists (title, position) VALUES ($1, $2) RETURNING id, title, position, created_at, updated_at`
 
 	var list server.List
-	err := d.Pool.QueryRow(ctx, query, title).Scan(
+	err = d.Pool.QueryRow(ctx, query, title, maxPosition+1).Scan(
 		&list.ID,
 		&list.Title,
+		&list.Position,
 		&list.CreatedAt,
 		&list.UpdatedAt,
 	)
@@ -27,12 +36,13 @@ func (d *DB) CreateList(ctx context.Context, title string) (*server.List, error)
 }
 
 func (d *DB) GetList(ctx context.Context, id string) (*server.List, error) {
-	query := `SELECT * FROM lists WHERE id = $1`
+	query := `SELECT id, title, position, created_at, updated_at FROM lists WHERE id = $1`
 
 	var list server.List
 	err := d.Pool.QueryRow(ctx, query, id).Scan(
 		&list.ID,
 		&list.Title,
+		&list.Position,
 		&list.CreatedAt,
 		&list.UpdatedAt,
 	)
@@ -47,7 +57,7 @@ func (d *DB) GetList(ctx context.Context, id string) (*server.List, error) {
 }
 
 func (d *DB) GetAllLists(ctx context.Context) ([]server.List, error) {
-	query := `SELECT * FROM lists ORDER BY created_at DESC`
+	query := `SELECT id, title, position, created_at, updated_at FROM lists ORDER BY position ASC`
 
 	rows, err := d.Pool.Query(ctx, query)
 	if err != nil {
@@ -61,6 +71,7 @@ func (d *DB) GetAllLists(ctx context.Context) ([]server.List, error) {
 		err := rows.Scan(
 			&list.ID,
 			&list.Title,
+			&list.Position,
 			&list.CreatedAt,
 			&list.UpdatedAt,
 		)
@@ -74,12 +85,13 @@ func (d *DB) GetAllLists(ctx context.Context) ([]server.List, error) {
 }
 
 func (d *DB) UpdateList(ctx context.Context, id string, title string) (*server.List, error) {
-	query := `UPDATE lists SET title = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, title, created_at, updated_at`
+	query := `UPDATE lists SET title = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, title, position, created_at, updated_at`
 
 	var list server.List
 	err := d.Pool.QueryRow(ctx, query, title, id).Scan(
 		&list.ID,
 		&list.Title,
+		&list.Position,
 		&list.CreatedAt,
 		&list.UpdatedAt,
 	)
@@ -103,6 +115,36 @@ func (d *DB) DeleteList(ctx context.Context, id string) error {
 
 	if result.RowsAffected() == 0 {
 		return fmt.Errorf("list with id %s not found", id)
+	}
+
+	return nil
+}
+
+// ReorderLists updates the positions of lists based on the provided order
+func (d *DB) ReorderLists(ctx context.Context, listIDs []string) error {
+	if len(listIDs) == 0 {
+		return nil
+	}
+
+	// Start a transaction to ensure atomicity
+	tx, err := d.Pool.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	defer tx.Rollback(ctx)
+
+	// Update positions for each list
+	for i, listID := range listIDs {
+		query := `UPDATE lists SET position = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2`
+		_, err := tx.Exec(ctx, query, i+1, listID)
+		if err != nil {
+			return fmt.Errorf("failed to update list position: %w", err)
+		}
+	}
+
+	// Commit the transaction
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("failed to commit transaction: %w", err)
 	}
 
 	return nil
