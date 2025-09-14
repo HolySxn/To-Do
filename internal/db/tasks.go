@@ -9,15 +9,14 @@ import (
 )
 
 // CRUD operations for Tasks
-func (d *DB) CreateTask(ctx context.Context, listID, taskName, description string) (*server.Task, error) {
-	query := `INSERT INTO tasks (list_id, task_name, description) VALUES ($1, $2, $3) RETURNING id, list_id, task_name, description, completed, created_at, updated_at`
+func (d *DB) CreateTask(ctx context.Context, listID, taskName string) (*server.Task, error) {
+	query := `INSERT INTO tasks (list_id, task_name) VALUES ($1, $2) RETURNING id, list_id, task_name, completed, created_at, updated_at`
 
 	var task server.Task
-	err := d.Pool.QueryRow(ctx, query, listID, taskName, description).Scan(
+	err := d.Pool.QueryRow(ctx, query, listID, taskName).Scan(
 		&task.ID,
 		&task.ListID,
 		&task.TaskName,
-		&task.Description,
 		&task.Completed,
 		&task.CreatedAt,
 		&task.UpdatedAt,
@@ -30,14 +29,13 @@ func (d *DB) CreateTask(ctx context.Context, listID, taskName, description strin
 }
 
 func (d *DB) GetTask(ctx context.Context, id string) (*server.Task, error) {
-	query := `SELECT * FROM tasks WHERE id = $1`
+	query := `SELECT id, list_id, task_name, completed, created_at, updated_at FROM tasks WHERE id = $1`
 
 	var task server.Task
 	err := d.Pool.QueryRow(ctx, query, id).Scan(
 		&task.ID,
 		&task.ListID,
 		&task.TaskName,
-		&task.Description,
 		&task.Completed,
 		&task.CreatedAt,
 		&task.UpdatedAt,
@@ -53,7 +51,7 @@ func (d *DB) GetTask(ctx context.Context, id string) (*server.Task, error) {
 }
 
 func (d *DB) GetTasksByListID(ctx context.Context, listID string) ([]server.Task, error) {
-	query := `SELECT * FROM tasks WHERE list_id = $1 ORDER BY created_at DESC`
+	query := `SELECT id, list_id, task_name, completed, created_at, updated_at FROM tasks WHERE list_id = $1 ORDER BY created_at DESC`
 
 	rows, err := d.Pool.Query(ctx, query, listID)
 	if err != nil {
@@ -68,7 +66,6 @@ func (d *DB) GetTasksByListID(ctx context.Context, listID string) ([]server.Task
 			&task.ID,
 			&task.ListID,
 			&task.TaskName,
-			&task.Description,
 			&task.Completed,
 			&task.CreatedAt,
 			&task.UpdatedAt,
@@ -83,7 +80,7 @@ func (d *DB) GetTasksByListID(ctx context.Context, listID string) ([]server.Task
 }
 
 func (d *DB) GetAllTasks(ctx context.Context) ([]server.Task, error) {
-	query := `SELECT * FROM tasks ORDER BY created_at DESC`
+	query := `SELECT id, list_id, task_name, completed, created_at, updated_at FROM tasks ORDER BY created_at DESC`
 
 	rows, err := d.Pool.Query(ctx, query)
 	if err != nil {
@@ -98,7 +95,6 @@ func (d *DB) GetAllTasks(ctx context.Context) ([]server.Task, error) {
 			&task.ID,
 			&task.ListID,
 			&task.TaskName,
-			&task.Description,
 			&task.Completed,
 			&task.CreatedAt,
 			&task.UpdatedAt,
@@ -112,15 +108,14 @@ func (d *DB) GetAllTasks(ctx context.Context) ([]server.Task, error) {
 	return tasks, nil
 }
 
-func (d *DB) UpdateTask(ctx context.Context, id, taskName, description string, completed bool) (*server.Task, error) {
-	query := `UPDATE tasks SET task_name = $1, description = $2, completed = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 RETURNING id, list_id, task_name, description, completed, created_at, updated_at`
+func (d *DB) UpdateTask(ctx context.Context, id, taskName string, completed bool) (*server.Task, error) {
+	query := `UPDATE tasks SET task_name = $1, completed = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING id, list_id, task_name, completed, created_at, updated_at`
 
 	var task server.Task
-	err := d.Pool.QueryRow(ctx, query, taskName, description, completed, id).Scan(
+	err := d.Pool.QueryRow(ctx, query, taskName, completed, id).Scan(
 		&task.ID,
 		&task.ListID,
 		&task.TaskName,
-		&task.Description,
 		&task.Completed,
 		&task.CreatedAt,
 		&task.UpdatedAt,
@@ -136,14 +131,13 @@ func (d *DB) UpdateTask(ctx context.Context, id, taskName, description string, c
 }
 
 func (d *DB) ToggleTaskCompletion(ctx context.Context, id string) (*server.Task, error) {
-	query := `UPDATE tasks SET completed = NOT completed, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING id, list_id, task_name, description, completed, created_at, updated_at`
+	query := `UPDATE tasks SET completed = NOT completed, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING id, list_id, task_name, completed, created_at, updated_at`
 
 	var task server.Task
 	err := d.Pool.QueryRow(ctx, query, id).Scan(
 		&task.ID,
 		&task.ListID,
 		&task.TaskName,
-		&task.Description,
 		&task.Completed,
 		&task.CreatedAt,
 		&task.UpdatedAt,

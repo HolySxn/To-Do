@@ -42,7 +42,6 @@ export namespace server {
 	    id: string;
 	    task_id: string;
 	    subtask_name: string;
-	    description: string;
 	    completed: boolean;
 	    // Go type: time
 	    created_at: any;
@@ -58,7 +57,6 @@ export namespace server {
 	        this.id = source["id"];
 	        this.task_id = source["task_id"];
 	        this.subtask_name = source["subtask_name"];
-	        this.description = source["description"];
 	        this.completed = source["completed"];
 	        this.created_at = this.convertValues(source["created_at"], null);
 	        this.updated_at = this.convertValues(source["updated_at"], null);
@@ -86,7 +84,6 @@ export namespace server {
 	    id: string;
 	    list_id: string;
 	    task_name: string;
-	    description: string;
 	    completed: boolean;
 	    // Go type: time
 	    created_at: any;
@@ -102,7 +99,6 @@ export namespace server {
 	        this.id = source["id"];
 	        this.list_id = source["list_id"];
 	        this.task_name = source["task_name"];
-	        this.description = source["description"];
 	        this.completed = source["completed"];
 	        this.created_at = this.convertValues(source["created_at"], null);
 	        this.updated_at = this.convertValues(source["updated_at"], null);

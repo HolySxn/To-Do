@@ -6,12 +6,12 @@ export function CreateList(arg1) {
   return window['go']['main']['App']['CreateList'](arg1);
 }
 
-export function CreateSubTask(arg1, arg2, arg3) {
-  return window['go']['main']['App']['CreateSubTask'](arg1, arg2, arg3);
+export function CreateSubTask(arg1, arg2) {
+  return window['go']['main']['App']['CreateSubTask'](arg1, arg2);
 }
 
-export function CreateTask(arg1, arg2, arg3) {
-  return window['go']['main']['App']['CreateTask'](arg1, arg2, arg3);
+export function CreateTask(arg1, arg2) {
+  return window['go']['main']['App']['CreateTask'](arg1, arg2);
 }
 
 export function DeleteList(arg1) {
@@ -58,10 +58,6 @@ export function GetTasksByListID(arg1) {
   return window['go']['main']['App']['GetTasksByListID'](arg1);
 }
 
-export function Greet(arg1) {
-  return window['go']['main']['App']['Greet'](arg1);
-}
-
 export function ToggleSubTaskCompletion(arg1) {
   return window['go']['main']['App']['ToggleSubTaskCompletion'](arg1);
 }
@@ -74,10 +70,10 @@ export function UpdateList(arg1, arg2) {
   return window['go']['main']['App']['UpdateList'](arg1, arg2);
 }
 
-export function UpdateSubTask(arg1, arg2, arg3, arg4) {
-  return window['go']['main']['App']['UpdateSubTask'](arg1, arg2, arg3, arg4);
+export function UpdateSubTask(arg1, arg2, arg3) {
+  return window['go']['main']['App']['UpdateSubTask'](arg1, arg2, arg3);
 }
 
-export function UpdateTask(arg1, arg2, arg3, arg4) {
-  return window['go']['main']['App']['UpdateTask'](arg1, arg2, arg3, arg4);
+export function UpdateTask(arg1, arg2, arg3) {
+  return window['go']['main']['App']['UpdateTask'](arg1, arg2, arg3);
 }

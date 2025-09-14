@@ -4,6 +4,7 @@ go 1.25.1
 
 require (
 	github.com/jackc/pgx/v5 v5.7.6
+	github.com/joho/godotenv v1.5.1
 	github.com/wailsapp/wails/v2 v2.10.2
 )
 

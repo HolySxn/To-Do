@@ -4,9 +4,9 @@ import {server} from '../models';
 
 export function CreateList(arg1:string):Promise<server.List>;
 
-export function CreateSubTask(arg1:string,arg2:string,arg3:string):Promise<server.SubTask>;
+export function CreateSubTask(arg1:string,arg2:string):Promise<server.SubTask>;
 
-export function CreateTask(arg1:string,arg2:string,arg3:string):Promise<server.Task>;
+export function CreateTask(arg1:string,arg2:string):Promise<server.Task>;
 
 export function DeleteList(arg1:string):Promise<void>;
 
@@ -30,14 +30,12 @@ export function GetTask(arg1:string):Promise<server.Task>;
 
 export function GetTasksByListID(arg1:string):Promise<Array<server.Task>>;
 
-export function Greet(arg1:string):Promise<string>;
-
 export function ToggleSubTaskCompletion(arg1:string):Promise<server.SubTask>;
 
 export function ToggleTaskCompletion(arg1:string):Promise<server.Task>;
 
 export function UpdateList(arg1:string,arg2:string):Promise<server.List>;
 
-export function UpdateSubTask(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<server.SubTask>;
+export function UpdateSubTask(arg1:string,arg2:string,arg3:boolean):Promise<server.SubTask>;
 
-export function UpdateTask(arg1:string,arg2:string,arg3:string,arg4:boolean):Promise<server.Task>;
+export function UpdateTask(arg1:string,arg2:string,arg3:boolean):Promise<server.Task>;

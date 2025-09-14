@@ -1,6 +1,6 @@
 # ToDo Application
 
-A modern, responsive to-do application built with Wails (Go + React) and PostgreSQL.
+A modern, responsive to-do application built with Wails (Go + React) and PostgreSQL, featuring a robust configuration system and comprehensive task management.
 
 ## Features
 
@@ -20,33 +20,33 @@ A modern, responsive to-do application built with Wails (Go + React) and Postgre
 
 ### Backend
 - **PostgreSQL Database**: Robust data storage with proper relationships
-- **String-based IDs**: Simple string identifiers for all entities
+- **UUID-based IDs**: Secure UUID identifiers for all entities
 - **CRUD Operations**: Complete Create, Read, Update, Delete functionality
-- **Cascading Deletes**: Deleting a list removes all its tasks
+- **Cascading Deletes**: Deleting a list removes all its tasks and subtasks
 - **Automatic Timestamps**: Created and updated timestamps for all records
+- **Configuration System**: Environment-based configuration with .env support
+- **Structured Logging**: JSON-based logging with configurable levels
 
 ## Database Schema
 
 ### Lists
-- `id` (TEXT PRIMARY KEY)
+- `id` (UUID PRIMARY KEY)
 - `title` (VARCHAR)
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
 
 ### Tasks
-- `id` (TEXT PRIMARY KEY)
-- `list_id` (TEXT FOREIGN KEY)
+- `id` (UUID PRIMARY KEY)
+- `list_id` (UUID FOREIGN KEY)
 - `task_name` (VARCHAR)
-- `description` (TEXT)
 - `completed` (BOOLEAN)
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
 
 ### SubTasks
-- `id` (TEXT PRIMARY KEY)
-- `task_id` (TEXT FOREIGN KEY)
+- `id` (UUID PRIMARY KEY)
+- `task_id` (UUID FOREIGN KEY)
 - `subtask_name` (VARCHAR)
-- `description` (TEXT)
 - `completed` (BOOLEAN)
 - `created_at` (TIMESTAMP)
 - `updated_at` (TIMESTAMP)
@@ -67,12 +67,30 @@ A modern, responsive to-do application built with Wails (Go + React) and Postgre
    cd to-do
    ```
 
-2. **Set up the database**
-   - Create a PostgreSQL database named `todo_db`
-   - Update the connection string in `app.go` if needed
-   - Default connection: `postgres://postgres:password@localhost:5432/todo_db?sslmode=disable`
+2. **Configure the application**
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+   
+   # Edit the configuration
+   nano .env
+   ```
 
-3. **Install dependencies**
+3. **Set up the database**
+   - Create a PostgreSQL database
+   - Update the database configuration in `.env` file
+   - Default configuration:
+     ```
+     DB_HOST=localhost
+     DB_PORT=5432
+     DB_USER=postgres
+     DB_PASSWORD=password
+     DB_NAME=todo_db
+     DB_SSLMODE=disable
+     LOG_LEVEL=info
+     ```
+
+4. **Install dependencies**
    ```bash
    # Backend dependencies
    go mod tidy
@@ -83,7 +101,7 @@ A modern, responsive to-do application built with Wails (Go + React) and Postgre
    cd ..
    ```
 
-4. **Build and run**
+5. **Build and run**
    ```bash
    # Development mode
    wails dev
@@ -101,13 +119,14 @@ A modern, responsive to-do application built with Wails (Go + React) and Postgre
 
 ### Adding Tasks
 1. In any list, click "+ Add a task"
-2. Enter task name and optional description
+2. Enter task name
 3. Click "Add" to create the task
 
 ### Managing Tasks
 - **Complete a task**: Click the checkbox next to the task
 - **Delete a task**: Click the "×" button next to the task
 - **View completed tasks**: Click on "Completed (X)" to expand/collapse
+- **Add subtasks**: Click on a task to add subtasks
 
 ### Navigation
 - **Sidebar**: Contains list of all lists and create new list button
@@ -126,20 +145,20 @@ The application exposes the following functions to the frontend:
 - `DeleteList(id string) error`
 
 ### Tasks
-- `CreateTask(listID string, taskName, description string) (*Task, error)`
+- `CreateTask(listID string, taskName string) (*Task, error)`
 - `GetTask(id string) (*Task, error)`
 - `GetTasksByListID(listID string) ([]Task, error)`
 - `GetAllTasks() ([]Task, error)`
-- `UpdateTask(id string, taskName, description string, completed bool) (*Task, error)`
+- `UpdateTask(id string, taskName string, completed bool) (*Task, error)`
 - `ToggleTaskCompletion(id string) (*Task, error)`
 - `DeleteTask(id string) error`
 
 ### SubTasks
-- `CreateSubTask(taskID string, subTaskName, description string) (*SubTask, error)`
+- `CreateSubTask(taskID string, subTaskName string) (*SubTask, error)`
 - `GetSubTask(id string) (*SubTask, error)`
 - `GetSubTasksByTaskID(taskID string) ([]SubTask, error)`
 - `GetAllSubTasks() ([]SubTask, error)`
-- `UpdateSubTask(id string, subTaskName, description string, completed bool) (*SubTask, error)`
+- `UpdateSubTask(id string, subTaskName string, completed bool) (*SubTask, error)`
 - `ToggleSubTaskCompletion(id string) (*SubTask, error)`
 - `DeleteSubTask(id string) error`
 
@@ -149,7 +168,8 @@ The application exposes the following functions to the frontend:
 ```
 internal/
 ├── models.go          # Data models (List, Task, SubTask)
-├── server.go          # Server utilities
+├── config/
+│   └── config.go      # Configuration management
 └── db/
     ├── db.go          # Database connection and initialization
     ├── lists.go       # List CRUD operations
@@ -162,16 +182,54 @@ internal/
 frontend/src/
 ├── App.jsx            # Main application component
 ├── App.css            # Application styles
-└── main.jsx           # Application entry point
+├── main.jsx           # Application entry point
+├── components/        # React components
+│   ├── Header.jsx
+│   ├── Sidebar.jsx
+│   ├── TaskList.jsx
+│   ├── TaskItem.jsx
+│   └── SubTaskItem.jsx
+└── hooks/             # Custom React hooks
+    ├── useTodoData.js
+    └── useTaskActions.js
 ```
+
+## Configuration
+
+The application features a robust configuration system that supports environment variables and `.env` files. See [CONFIG.md](CONFIG.md) for detailed configuration options.
+
+### Quick Configuration
+
+1. **Copy the example environment file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Edit the configuration:**
+   ```bash
+   nano .env
+   ```
+
+3. **Environment Variables:**
+   - `DB_HOST` - Database host (default: localhost)
+   - `DB_PORT` - Database port (default: 5432)
+   - `DB_USER` - Database username (default: postgres)
+   - `DB_PASSWORD` - Database password (default: password)
+   - `DB_NAME` - Database name (default: todo_db)
+   - `DB_SSLMODE` - SSL mode (default: disable)
+   - `LOG_LEVEL` - Logging level (default: info)
+
+### Configuration Features
+
+- **Environment Variable Support**: Override any setting with environment variables
+- **Default Values**: Sensible defaults for all configuration options
+- **Validation**: Automatic validation of configuration values
+- **Structured Logging**: JSON-based logging with configurable levels
 
 ## Technologies Used
 
 - **Backend**: Go, PostgreSQL, pgx/v5
-- **Frontend**: React, CSS3
+- **Frontend**: React, Vite, CSS3
 - **Framework**: Wails v2
-- **Database**: PostgreSQL with TEXT primary keys
-
-## License
-
-This project is licensed under the MIT License.
+- **Database**: PostgreSQL with UUID primary keys
+- **Configuration**: Environment variables with .env support
